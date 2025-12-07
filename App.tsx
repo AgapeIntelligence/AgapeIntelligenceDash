@@ -3,20 +3,26 @@ import { Sidebar } from './components/Sidebar';
 import { Dashboard } from './components/Dashboard';
 import { RepoViewer } from './components/RepoViewer';
 import { ChatInterface } from './components/ChatInterface';
-import { View } from './types';
+import { View, FileNode } from './types';
 import { Bell, Search, UserCircle } from 'lucide-react';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>(View.DASHBOARD);
+  const [activeChatFile, setActiveChatFile] = useState<FileNode | null>(null);
+
+  const handleAskAgape = (file: FileNode) => {
+    setActiveChatFile(file);
+    setCurrentView(View.INTELLIGENCE);
+  };
 
   const renderContent = () => {
     switch (currentView) {
       case View.DASHBOARD:
         return <Dashboard />;
       case View.REPOSITORY:
-        return <RepoViewer />;
+        return <RepoViewer onAskAgape={handleAskAgape} />;
       case View.INTELLIGENCE:
-        return <ChatInterface />;
+        return <ChatInterface activeFile={activeChatFile} onClearFile={() => setActiveChatFile(null)} />;
       case View.SETTINGS:
         return (
            <div className="flex items-center justify-center h-full bg-white rounded-2xl border border-slate-200 shadow-sm">
